@@ -10,8 +10,10 @@ This script tests the local Ollama installation with Gemma3 model to verify:
 - Response times are acceptable
 """
 
+import json
 import sys
 import time
+from pathlib import Path
 
 try:
     import ollama
@@ -20,8 +22,63 @@ except ImportError:
     print("Install it with: pip install ollama")
     sys.exit(1)
 
-# Constants
-MODEL_NAME = "gemma3"
+# Configuration
+CONFIG_PATH = Path(__file__).resolve().parent / "config.json"
+
+
+def load_config(path: Path = CONFIG_PATH) -> dict:
+    """Load configuration from config.json with validation."""
+    if not path.exists():
+        print("❌ Error: config.json not found.")
+        print(f"Expected path: {path}")
+        print(
+            "Create the file (see the committed config.json for defaults) and try again."
+        )
+        sys.exit(1)
+
+    try:
+        with path.open(encoding="utf-8") as f:
+            config = json.load(f)
+    except json.JSONDecodeError as exc:
+        print("❌ Error: Invalid JSON in config.json.")
+        print(f"   {exc}")
+        print("Fix the JSON syntax (a trailing comma is a common issue) and try again.")
+        sys.exit(1)
+    except OSError as exc:
+        print("❌ Error: Unable to read config.json.")
+        print(f"   {exc}")
+        sys.exit(1)
+
+    if "ollama" not in config or not isinstance(config["ollama"], dict):
+        print("❌ Error: config.json is missing the 'ollama' section.")
+        print("Expected structure:")
+        print(
+            json.dumps(
+                {
+                    "ollama": {
+                        "url": "http://localhost:11434",
+                        "model": "gemma3",
+                    }
+                },
+                indent=2,
+            )
+        )
+        sys.exit(1)
+
+    ollama_config = config["ollama"]
+    missing_keys = [key for key in ("url", "model") if key not in ollama_config]
+    if missing_keys:
+        print("❌ Error: config.json is missing required keys in the 'ollama' section.")
+        print(f"Missing: {', '.join(missing_keys)}")
+        print("Update config.json with the required keys and try again.")
+        sys.exit(1)
+
+    return config
+
+
+CONFIG = load_config()
+MODEL_NAME = CONFIG["ollama"]["model"]
+OLLAMA_URL = CONFIG["ollama"]["url"]
 TIMEOUT_SECONDS = 30
 
 # Test prompt that checks JSON formatting and domain relevance
@@ -39,6 +96,7 @@ def test_ollama_connection():
     print("=" * 50)
     print()
     print(f"Testing connection to Ollama")
+    print(f"Endpoint: {OLLAMA_URL}")
     print(f"Model: {MODEL_NAME}")
     print(f"Timeout: {TIMEOUT_SECONDS}s")
     print()
@@ -51,8 +109,10 @@ def test_ollama_connection():
     start_time = time.time()
 
     try:
+        client = ollama.Client(host=OLLAMA_URL)
+
         # Send request to Ollama using the official library
-        response = ollama.generate(
+        response = client.generate(
             model=MODEL_NAME,
             prompt=TEST_PROMPT,
         )
@@ -100,12 +160,24 @@ def test_ollama_connection():
         print()
         print("Possible causes:")
         print("   1. Ollama service is not running")
-        print("   2. Ollama is running on a different port")
+        print("   2. Ollama is running on a different port or host")
         print()
         print("To fix this:")
         print("   - Check if Ollama is running: ollama list")
         print("   - Start Ollama if needed: ollama serve")
+        print(
+            "   - Confirm the 'url' in config.json points to the correct Ollama endpoint"
+        )
         print("   - Or simply run any ollama command: ollama --version")
+        return False
+
+    except ValueError as e:
+        print("❌ Test FAILED")
+        print(f"   Invalid configuration value: {e}")
+        print()
+        print(
+            "Check the 'url' value in config.json and ensure it is a valid HTTP(S) URL."
+        )
         return False
 
     except TimeoutError:

@@ -224,14 +224,14 @@ response = client.smartscraper(
 
 ```json
 {
-  "MoodleSession": "your_session_cookie",
   "ollama": {
-    "endpoint": "http://localhost:11434",
-    "model": "gemma3",
-    "timeout": 30
+    "url": "http://localhost:11434",
+    "model": "gemma3"
   }
 }
 ```
+
+**Note**: The MoodleSession cookie is stored separately in `.cookie` file for security.
 
 ### Prompt Engineering
 
