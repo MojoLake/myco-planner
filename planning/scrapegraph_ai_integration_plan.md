@@ -8,7 +8,8 @@ The MyCourses scraper currently uses:
 
 - **Requests + BeautifulSoup**: Manual HTML parsing with CSS selectors and DOM navigation
 - **Selenium + BeautifulSoup**: Browser automation for 2FA login, then manual parsing
-- **Cookie Management**: Stores MoodleSession cookies for authentication
+- **Cookie Management**: Stores MoodleSession cookies in `.cookie` file for authentication
+- **Configuration**: Uses `config.json` for Ollama server URL and model settings
 - **Manual Extraction**: Hardcoded logic to find sections, activities, announcements
 
 ### Problem
@@ -106,8 +107,8 @@ Examples:
 
 #### 3. Authentication Layer (Enhanced)
 
-- Keep existing cookie management (already works well)
-- Configure Ollama endpoint (typically http://localhost:11434)
+- Keep existing cookie management from `.cookie` file (already works well)
+- Configure Ollama endpoint via `config.json` (typically http://localhost:11434)
 - No API keys needed - fully local processing
 
 #### 4. Output Standardization

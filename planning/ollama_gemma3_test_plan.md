@@ -40,12 +40,13 @@ Before integrating ScrapeGraph AI with Ollama for MyCourses scraping, we need to
 
 Create a minimal Python script (`test_ollama.py`) that:
 
-1. **Connects to Ollama** at default endpoint (http://localhost:11434)
-2. **Sends a simple prompt** to Gemma3 model
-3. **Displays the response** and timing information
-4. **Reports success/failure** with clear error messages
+1. **Loads configuration** from `config.json` (Ollama URL and model name)
+2. **Connects to Ollama** at configured endpoint (default: http://localhost:11434)
+3. **Sends a simple prompt** to configured model (default: gemma3)
+4. **Displays the response** and timing information
+5. **Reports success/failure** with clear error messages
 
-All settings hardcoded for simplicity - no config file needed.
+Configuration is read from `config.json` to allow flexible endpoint and model selection.
 
 ### Simple Test Prompt
 
@@ -103,23 +104,29 @@ This tests:
 ```python
 # test_ollama.py - Minimal test structure
 
-1. Import required libraries (requests, json, time)
-2. Define constants (endpoint, model, timeout)
-3. Define Ollama API call function
-4. Send test prompt to Gemma3
+1. Import required libraries (ollama, json, time)
+2. Load configuration from config.json (endpoint, model, timeout)
+3. Connect to Ollama service
+4. Send test prompt to configured model
 5. Validate response
 6. Display results with timing
 7. Report success or failure
 ```
 
-### API Endpoint
+### Configuration
 
-Ollama REST API format:
+Configuration is stored in `config.json`:
 
-- **Endpoint**: `http://localhost:11434/api/generate`
-- **Method**: POST
-- **Payload**: `{"model": "gemma3", "prompt": "...", "stream": false}`
-- **Response**: JSON with `response` field containing generated text
+```json
+{
+  "ollama": {
+    "url": "http://localhost:11434",
+    "model": "gemma3"
+  }
+}
+```
+
+A `config.json.example` file provides a template for users to create their own configuration.
 
 ### Error Handling
 
