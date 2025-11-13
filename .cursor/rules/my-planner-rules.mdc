@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+
+uv is used as the package manager.
+To run the code, it is `uv run {program}`
+To add packages: `uv add` and to sync: `uv sync`.
