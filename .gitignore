@@ -1,5 +1,5 @@
 # Configuration file with session cookies (contains sensitive data)
-config.json
+.cookie
 
 # Python
 __pycache__/
