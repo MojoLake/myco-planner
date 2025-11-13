@@ -299,7 +299,7 @@ myco_planner/
 └── planning/
     ├── config_refactoring_plan.md  # This document
     ├── ollama_gemma3_test_plan.md  # Updated references
-    └── scrapegraph_ai_integration_plan.md  # Updated references
+    └── calendar_feed_integration_plan.md  # Updated references
 ```
 
 ## Validation & Testing
@@ -479,6 +479,6 @@ myco_planner/
 
 - Current script: `test_ollama.py`
 - Related plans: `planning/ollama_gemma3_test_plan.md`
-- Integration plan: `planning/scrapegraph_ai_integration_plan.md`
+- Integration plan: `planning/calendar_feed_integration_plan.md`
 - [Ollama API Documentation](https://github.com/ollama/ollama/blob/main/docs/api.md)
 - [Python JSON module](https://docs.python.org/3/library/json.html)

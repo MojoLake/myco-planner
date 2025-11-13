@@ -73,25 +73,24 @@ Step 3: Inside the function, add a try-catch block...
 ### ✅ Right Level (Good)
 
 ```
-Data Fetching Layer: A module responsible for making authenticated HTTP
-requests to the MyCourses API. Will handle cookie management, session
-persistence, and error handling. Exposes a simple interface for other
-components to request data without worrying about authentication details.
+Calendar Ingestion Layer: A module responsible for fetching the MyCourses
+personal iCal feed, handling token storage/refresh, and exposing normalized
+events so other components can consume schedule data without worrying about
+calendar parsing details.
 ```
 
 ### ✅ When Code Is Appropriate
 
 ```
-Authentication: We'll use ScrapeGraph AI's cookie injection feature:
+Calendar Parsing: We'll read the authenticated iCal feed and normalize events:
 
-    client.smartscraper(
-        website_url=url,
-        cookies={"MoodleSession": session_cookie},
-        ...
-    )
+    import ics
 
-This allows us to maintain our existing cookie management while leveraging
-AI-powered extraction.
+    calendar = ics.Calendar(requests.get(feed_url).text)
+    for event in calendar.events:
+        tasks.append({"title": event.name, "due": event.begin})
+
+This clarifies how we transform MyCourses calendar data into structured tasks.
 ```
 
 ## Remember

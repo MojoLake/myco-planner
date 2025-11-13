@@ -1,6 +1,9 @@
 # Configuration file with session cookies (contains sensitive data)
 .cookie
 
+# Calendar feed URL (contains auth token)
+calendar_feed_url.txt
+
 # Python
 __pycache__/
 *.py[cod]
